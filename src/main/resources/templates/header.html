@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="header">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>헤더</title>
+    <script th:src="@{/js/axios.min.js}"></script>
+    <script th:src="@{/js/vue@2.min.js}"></script>
+</head>
+<body>
+<!-- 헤더 내용 -->
+<header>
+    <nav>
+        <ul>
+            <li><a th:href="@{/}">홈</a></li>
+        </ul>
+    </nav>
+</header>
+
+</body>
+</html>

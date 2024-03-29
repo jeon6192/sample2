@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration</title>
+    <!-- Vue.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <!-- Axios CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+<div id="app">
+    <h2>User Registration Form</h2>
+    <form th:action="@{/signup}" method="post">
+        <input type="hidden" id="isOAuth" name="isOAuth" v-model="isOAuth">
+        <input type="hidden" id="oAuth" name="oauthType" v-model="oauthType">
+        <input type="hidden" id="oauthId" name="oauthId" v-model="oauthId">
+        <div>
+            <label for="id">id:</label>
+            <input type="text" id="id" name="id" v-model="id" :readonly="isOAuth">
+        </div>
+        <div v-if="!isOAuth">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" v-model="password">
+        </div>
+        <div>
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" v-model="name" :readonly="isOAuth">
+        </div>
+        <div>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" v-model="email">
+        </div>
+        <div>
+            <label for="birth">birth:</label>
+            <input type="date" id="birth" name="birth" v-model="birth">
+        </div>
+        <div>
+            <label>Gender:</label>
+            <input type="radio" id="male" name="gender" value="Male" v-model="gender" @change="onGenderChange('Male')">
+            <label for="male">Male</label>
+            <input type="radio" id="female" name="gender" value="Female" v-model="gender" @change="onGenderChange('Female')">
+            <label for="female">Female</label>
+            <input type="radio" id="other" name="gender" v-model="gender" @change="onGenderChange('Other')">
+            <label for="other">Other</label>
+        </div>
+        <div>
+            <label for="phone">Phone Number:</label>
+            <input type="text" id="phone" name="phone" v-model="phone">
+        </div>
+        <div>
+            <label for="nickname">Nickname:</label>
+            <input type="text" id="nickname" name="nickname" v-model="nickname">
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+</div>
+
+<script th:inline="javascript">
+    new Vue({
+        el: '#app',
+        data() {
+            return {
+                id: [[${id}]] || '',
+                password: '',
+                name: [[${name}]] || '',
+                email: '',
+                birth: '',
+                gender: null,
+                phone: '',
+                nickname: null,
+                oauthType: [[${oauthType}]] || null,
+                oauthId: [[${oauthId}]] || null,
+                isOAuth: [[${isOAuth}]]
+            }
+        },
+        methods: {
+            onGenderChange(value) {
+                this.gender = value === 'Other' ? null : value;
+            }
+        }
+    });
+</script>
+</body>
+</html>
