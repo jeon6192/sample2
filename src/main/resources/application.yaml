@@ -1,0 +1,82 @@
+logging:
+  level:
+    org.hibernate.SQL: TRACE
+    org.hibernate.type: TRACE
+    org.hibernate.type.BasicTypeRegistry: ERROR
+
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  jpa:
+    properties.hibernate:
+      show_sql: true
+      format_sql: true
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+
+  profiles:
+    include: oauth
+
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+
+aes.secret-key: "YourSecretKey"
+
+jasypt:
+  encryptor:
+    password: ${env:JASYPT_PASSWORD}
+    algorithm: PBEWithMD5AndDES
+    pool-size: 1
+    provider-name: SunJCE
+    string-output-type: base64
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: local
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/tcast?useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: 3091
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+server:
+  port: 8090
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  datasource:
+    url: jdbc:mysql://110.8.133.196:3306/tcast?useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: 3091
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+server:
+  port: 8090
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  datasource:
+    url: jdbc:mysql://110.8.133.196:3306/tcast?useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: 3091
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+server:
+  port: 8080

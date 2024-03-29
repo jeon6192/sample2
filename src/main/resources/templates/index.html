@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <link th:replace="header :: header"></link>
+</head>
+<body>
+<header>
+    <h1>로고 혹은 사이트 제목</h1>
+    <nav>
+        <ul>
+            <li><a th:href="@{/login}">로그인</a></li>
+        </ul>
+    </nav>
+</header>
+

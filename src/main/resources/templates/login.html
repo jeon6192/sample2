@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <title>Login</title>
+    <!-- Vue.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <!-- Axios CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+<div id="app" th:controller="LoginController">
+    <form th:action="@{/login}" method="post">
+        <div>
+            <label for="userId">아이디:</label>
+            <input type="text" id="userId" name="userId">
+        </div>
+        <div>
+            <label for="password">비밀번호:</label>
+            <input type="password" id="password" name="password">
+        </div>
+        <button type="submit">로그인</button>
+    </form>
+    <p>SNS 간편 로그인:</p>
+    <div>
+        <!-- 각 SNS 로그인 버튼에 Vue 이벤트 바인딩 -->
+        <button @click="redirectToOAuth('google')">구글로그인</button>
+        <button @click="redirectToOAuth('naver')">네이버로그인</button>
+        <button @click="redirectToOAuth('kakao')">카카오로그인</button>
+    </div>
+</div>
+
+<!-- Vue.js 코드 -->
+<script>
+    new Vue({
+        el: '#app',
+        methods: {
+            // OAuth 로그인 페이지로 리다이렉트
+            redirectToOAuth: function(provider) {
+                // 각 SNS에 대한 OAuth 로그인 페이지로 이동
+                switch(provider) {
+                    case 'google':
+                        window.location.href = '/oauth2/authorization/google';
+                        break;
+                    case 'naver':
+                        window.location.href = '/oauth2/authorization/naver';
+                        break;
+                    case 'kakao':
+                        window.location.href = '/oauth2/authorization/kakao';
+                        break;
+                    default:
+                        break;
+                }
+            },
+        }
+    });
+</script>
+</body>
+</html>
