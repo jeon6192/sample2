@@ -1,29 +1,51 @@
-package com.example.springbootsample.config.security;
+package com.example.springbootsample.config.security.admin;
 
 import com.example.springbootsample.model.dto.ErrorResponse;
+import com.example.springbootsample.model.entity.Admin;
 import com.example.springbootsample.model.enums.UserError;
+import com.example.springbootsample.service.AdminService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
+public class AdminAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
     private final ObjectMapper objectMapper;
 
-    public CustomAuthenticationFailureHandler() {
+    private final AdminService adminService;
+
+    public AdminAuthenticationFailureHandler(AdminService adminService) {
+        this.adminService = adminService;
         this.objectMapper = new ObjectMapper();
     }
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                                         AuthenticationException exception) throws IOException {
+
+        // 비밀번호 오입력 시 로그인 실패횟수 카운트 업데이트
+        if (exception instanceof BadCredentialsException) {
+            String id = request.getParameter("username");
+            Admin admin = adminService.findByAdminId(id).orElseThrow(() -> new UsernameNotFoundException("USER NOT FOUND"));
+
+            admin.setLoginFailureCnt(admin.getLoginFailureCnt() + 1);
+
+            adminService.saveAdmin(admin);
+        } else if (exception instanceof LockedException) {
+            // TODO: 비밀번호 초기화 후 이메일 발송
+
+        }
+
         /*
         스프링 시큐리티 AuthenticationException 종류
         - UsernameNotFoundException : 계정 없음

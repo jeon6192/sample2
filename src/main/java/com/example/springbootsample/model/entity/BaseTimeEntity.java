@@ -5,6 +5,7 @@ import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -19,11 +20,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class BaseTimeEntity {
     @CreatedDate
-    @Column(insertable = false, updatable = false)
+    @Column(insertable = false, updatable = false, nullable = false)
     private LocalDateTime createdAt;
 
     @LastModifiedDate
-    @Column(insertable = false, updatable = false)
+    @Column(insertable = false, nullable = false)
     private LocalDateTime updatedAt;
 
     public BaseTimeEntity(LocalDateTime createdAt, LocalDateTime updatedAt) {

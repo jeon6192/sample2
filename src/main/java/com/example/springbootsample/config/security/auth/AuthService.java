@@ -1,4 +1,4 @@
-package com.example.springbootsample.service;
+package com.example.springbootsample.config.security.auth;
 
 import com.example.springbootsample.model.dto.CustomOAuth2User;
 import com.example.springbootsample.model.dto.CustomUserDetails;
@@ -6,6 +6,8 @@ import com.example.springbootsample.model.entity.User;
 import com.example.springbootsample.model.enums.OAuth2Type;
 
 import javax.servlet.http.HttpSession;
+
+import com.example.springbootsample.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;

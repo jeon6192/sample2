@@ -1,11 +1,14 @@
 package com.example.springbootsample.service;
 
+import com.example.springbootsample.exception.UserException;
 import com.example.springbootsample.model.dto.UserDto;
 import com.example.springbootsample.model.entity.User;
 import com.example.springbootsample.model.enums.OAuth2Type;
+import com.example.springbootsample.model.enums.UserError;
 import com.example.springbootsample.repository.UserRepository;
 import com.example.springbootsample.util.CommonUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -29,14 +32,23 @@ public class UserService {
     }
 
     public UserDto saveUser(UserDto dto) {
+        User user = userRepository.save(User.toEntity(dto));
+
+        return UserDto.toDto(user);
+    }
+
+    public UserDto registerUser(UserDto dto) throws UserException {
         if (!dto.isOAuth()) {
             String encodedPassword = passwordEncoder.encode(dto.getPassword());
             dto.setPassword(encodedPassword);
         }
 
-        User user = userRepository.save(User.toEntity(dto));
-
-        return UserDto.toDto(user);
+        try {
+            return saveUser(dto);
+        } catch (DataIntegrityViolationException e) {
+            log.error(e.getMessage());
+            throw new UserException(UserError.BAD_REQUEST);
+        }
     }
 
     public Optional<User> findByOauthTypeAndOauthId(String oauthType, String oauthId) {

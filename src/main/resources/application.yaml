@@ -3,6 +3,7 @@ logging:
     org.hibernate.SQL: TRACE
     org.hibernate.type: TRACE
     org.hibernate.type.BasicTypeRegistry: ERROR
+    com.example.springbootsample.mapper: DEBUG
 
 spring:
   main:
@@ -23,6 +24,14 @@ spring:
     prefix: classpath:/templates/
     suffix: .html
 
+mybatis:
+  mapper-locations:
+    - classpath:/mapper/*.xml
+    - classpath:/mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+  type-aliases-package: com.example.springbootsample.util
+
 aes.secret-key: "YourSecretKey"
 
 jasypt:
@@ -41,8 +50,8 @@ spring:
       on-profile: local
 
   datasource:
-    url: jdbc:mysql://localhost:3306/tcast?useSSL=false&allowPublicKeyRetrieval=true
-    username: root
+    url: jdbc:mysql://110.8.133.196:3311/tcast?useSSL=false&allowPublicKeyRetrieval=true
+    username: user
     password: 3091
     driver-class-name: com.mysql.cj.jdbc.Driver
 

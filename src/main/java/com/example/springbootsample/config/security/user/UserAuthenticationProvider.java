@@ -1,23 +1,23 @@
-package com.example.springbootsample.config.security;
+package com.example.springbootsample.config.security.user;
 
 import com.example.springbootsample.model.dto.CustomUserDetails;
-import com.example.springbootsample.service.CustomUserDetailsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class CustomAuthenticationProvider implements AuthenticationProvider {
+public class UserAuthenticationProvider implements AuthenticationProvider {
 
     private final CustomUserDetailsService userDetailsService;
 
     private final PasswordEncoder passwordEncoder;
 
-    public CustomAuthenticationProvider(CustomUserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+    public UserAuthenticationProvider(CustomUserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
         this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
     }
@@ -31,7 +31,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         CustomUserDetails customUserDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(username);
 
         if (!passwordEncoder.matches(password, customUserDetails.getPassword())) {
-            throw new BadCredentialsException("패스워드가 일치하지 않습니다.");
+            throw new BadCredentialsException("password");
         }
 
         if (!customUserDetails.isEnabled()) {
@@ -41,8 +41,21 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         return new UsernamePasswordAuthenticationToken(customUserDetails, password, customUserDetails.getAuthorities());
     }
 
+    /**
+     * UsernamePasswordAuthenticationToken: 사용자 이름과 비밀번호로부터 생성되는 인증 토큰.
+     * JwtAuthenticationToken: JWT 토큰 기반의 인증 토큰.
+     * OAuth2AuthenticationToken: OAuth2 프로토콜을 사용하는 인증 토큰.
+     * RememberMeAuthenticationToken: "Remember Me" 기능을 통해 생성되는 인증 토큰.
+     * AnonymousAuthenticationToken: 인증되지 않은 익명 사용자를 나타내는 인증 토큰.
+     * PreAuthenticatedAuthenticationToken: 사전 인증된 사용자를 나타내는 인증 토큰.
+     * @return 지원하는 token 일 경우 true 반환
+     */
     @Override
     public boolean supports(Class<?> authentication) {
-        return AnonymousAuthenticationToken.class.isAssignableFrom(authentication);
+        return AnonymousAuthenticationToken.class.isAssignableFrom(authentication)
+                || UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication)
+                || OAuth2AuthenticationToken.class.isAssignableFrom(authentication)
+                || RememberMeAuthenticationToken.class.isAssignableFrom(authentication)
+                ;
     }
 }

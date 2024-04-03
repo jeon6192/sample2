@@ -9,12 +9,13 @@ import com.example.springbootsample.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 @Slf4j
-@RestController
+@Controller
 public class UserController {
 
     private final UserService userService;
@@ -24,7 +25,7 @@ public class UserController {
     }
 
     @GetMapping("/signup")
-    public ModelAndView goToSignup(@RequestParam(required = false) String oauthType, @RequestParam(required = false) String name,
+    public ModelAndView navigateToSignup(@RequestParam(required = false) String oauthType, @RequestParam(required = false) String name,
                                    @RequestParam(required = false) String oauthId) {
         ModelAndView modelAndView = new ModelAndView("signup");
         modelAndView.addObject("isOAuth", oauthType != null);
@@ -41,8 +42,8 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<UserDto> saveUser(@ModelAttribute UserDto dto) {
-        return ResponseEntity.ok(userService.saveUser(dto));
+    public ResponseEntity<UserDto> saveUser(@ModelAttribute UserDto dto) throws UserException {
+        return ResponseEntity.ok(userService.registerUser(dto));
     }
 
     @GetMapping("/me")
@@ -70,10 +71,7 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public ModelAndView goToLogin() {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("login");
-
-        return modelAndView;
+    public ModelAndView navigateToLogin() {
+        return new ModelAndView("login");
     }
 }

@@ -11,23 +11,31 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
+@Getter
 public class CustomUserDetails implements UserDetails, OAuth2User {
+    // common
+    private String id;
 
-    private final String id;
+    private String password;
 
-    private final String password;
+    private String name;
 
-    private final String name;
+    private LocalDateTime withdrawalDate;
 
-    private final LocalDateTime withdrawalDate;
+    // user
+    private Map<String, Object> attributes;
 
-    private final Map<String, Object> attributes;
+    private String oauthType;
 
-    @Getter
-    private final String oauthType;
+    private String oauthId;
 
-    @Getter
-    private final String oauthId;
+    // admin
+    private String role;
+
+    private String allowedIp;
+
+    private Integer loginFailureCnt;
+
 
     @Override
     public Map<String, Object> getAttributes() {
@@ -75,14 +83,18 @@ public class CustomUserDetails implements UserDetails, OAuth2User {
     }
 
     @Builder
-    public CustomUserDetails(String id, String password, String name, LocalDateTime withdrawalDate, Map<String, Object> attributes, String oauthType, String oauthId) {
+    public CustomUserDetails(String id, String password, String name, LocalDateTime withdrawalDate,
+                             Map<String, Object> attributes, String role, String allowedIp, String oauthType,
+                             String oauthId, Integer loginFailureCnt) {
         this.id = id;
         this.password = password;
         this.name = name;
         this.withdrawalDate = withdrawalDate;
         this.attributes = attributes;
+        this.role = role;
+        this.allowedIp = allowedIp;
         this.oauthType = oauthType;
         this.oauthId = oauthId;
+        this.loginFailureCnt = loginFailureCnt;
     }
-
 }

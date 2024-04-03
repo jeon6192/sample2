@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idx;
+    private Integer idx;
 
     private String id;
 
@@ -41,14 +41,12 @@ public class User {
 
     private LocalDateTime withdrawalDate;
 
-    private LocalDateTime passwordModifiedTime;
-
-    private LocalDateTime lastLoginTime;
+    private LocalDateTime passwordModifiedDate;
 
     @Builder
-    public User(Long idx, String id, String password, String name, String email, String birth, String phone,
+    public User(Integer idx, String id, String password, String name, String email, String birth, String phone,
                 String gender, String nickname, String oauthType, String oauthId, LocalDateTime withdrawalDate,
-                LocalDateTime passwordModifiedTime, LocalDateTime lastLoginTime) {
+                LocalDateTime passwordModifiedDate) {
         this.idx = idx;
         this.id = id;
         this.password = password;
@@ -61,16 +59,11 @@ public class User {
         this.oauthType = oauthType;
         this.oauthId = oauthId;
         this.withdrawalDate = withdrawalDate;
-        this.passwordModifiedTime = passwordModifiedTime;
-        this.lastLoginTime = lastLoginTime;
+        this.passwordModifiedDate = passwordModifiedDate;
     }
 
     public void updateWithdrawalDate(LocalDateTime withdrawalDate) {
         this.withdrawalDate = withdrawalDate;
-    }
-
-    public void updateLoginTime() {
-        this.lastLoginTime = LocalDateTime.now();
     }
 
     public static User toEntity(UserDto dto) {
@@ -86,7 +79,7 @@ public class User {
                 .birth(dto.getBirth())
                 .oauthType(dto.getOauthType())
                 .oauthId(dto.getOauthId())
-                .lastLoginTime(dto.getLastLoginTime())
+                .passwordModifiedDate(dto.getPasswordModifiedDate())
                 .build();
     }
 }

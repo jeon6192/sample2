@@ -1,7 +1,6 @@
-package com.example.springbootsample.config.security.auth;
+package com.example.springbootsample.config.security.user;
 
 import com.example.springbootsample.model.dto.CustomUserDetails;
-import com.example.springbootsample.model.dto.UserDto;
 import com.example.springbootsample.model.entity.User;
 import com.example.springbootsample.service.UserService;
 import org.springframework.security.core.Authentication;
@@ -13,11 +12,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class AuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+public class UserAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final UserService userService;
 
-    public AuthSuccessHandler(UserService userService) {
+    public UserAuthenticationSuccessHandler(UserService userService) {
         this.userService = userService;
     }
 
@@ -25,17 +24,10 @@ public class AuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         // 로그인된 유저객체 얻어오기
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-        String oauthType = customUserDetails.getOauthType();
-        String oauthId = customUserDetails.getOauthId();
+        String id = customUserDetails.getUsername();
 
-        User user = userService.findByOauthTypeAndOauthId(oauthType, oauthId).orElseThrow(()
+        User user = userService.findByUserId(id).orElseThrow(()
                 -> new UsernameNotFoundException("USER NOT FOUND"));
-
-        // 로그인에 성공 시 마지막 로그인 시간 갱신
-        UserDto userDto = UserDto.toDto(user);
-        userDto.setOAuth(true);
-
-        userService.saveUser(userDto);
 
         // TODO: 로그인 이력 테이블에 insert
 

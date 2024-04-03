@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
@@ -18,6 +19,8 @@ public enum UserError {
     NOT_FOUND_USER("005", "계정 없음", UNAUTHORIZED),
     MISMATCH_PASSWORD("006", "비밀번호 불일치", UNAUTHORIZED),
     WITHDRAWAL_USER("008", "탈퇴한 계정", UNAUTHORIZED),
+    NOT_ALLOWED_IP("009", "허용되지 않은 IP", UNAUTHORIZED),
+    LOCKED_ACCOUNT("010", "잠김 계정", UNAUTHORIZED),
     NOT_DEFINED("999", "서버 에러", INTERNAL_SERVER_ERROR),
     ;
 
@@ -34,12 +37,16 @@ public enum UserError {
     public static UserError getErrorByAuthenticationEx(AuthenticationException exception) {
         UserError userError;
 
-        if (exception instanceof BadCredentialsException) {
+        if (exception instanceof BadCredentialsException && "password".equals(exception.getMessage())) {
             userError = MISMATCH_PASSWORD;
+        } else if (exception instanceof BadCredentialsException && "ip".equals(exception.getMessage())) {
+            userError = NOT_ALLOWED_IP;
         } else if (exception instanceof UsernameNotFoundException) {
             userError = NOT_FOUND_USER;
         } else if (exception instanceof DisabledException) {
             userError = WITHDRAWAL_USER;
+        } else if (exception instanceof LockedException) {
+            userError = LOCKED_ACCOUNT;
         } else {
             userError = NOT_DEFINED;
         }

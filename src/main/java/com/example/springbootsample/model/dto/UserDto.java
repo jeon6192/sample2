@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserDto {
 
-    private Long idx;
+    private Integer idx;
 
     private String id;
 
@@ -35,11 +35,12 @@ public class UserDto {
     @Setter
     private boolean isOAuth;
 
-    private LocalDateTime lastLoginTime;
+    private LocalDateTime passwordModifiedDate;
 
     @Builder
-    public UserDto(Long idx, String id, String password, String name, String email, String birth,
-                   String phone, String gender, String nickname, String oauthType, String oauthId, boolean isOAuth, LocalDateTime lastLoginTime) {
+    public UserDto(Integer idx, String id, String password, String name, String email, String birth,
+                   String phone, String gender, String nickname, String oauthType, String oauthId, boolean isOAuth,
+                   LocalDateTime passwordModifiedDate) {
         this.idx = idx;
         this.id = id;
         this.password = password;
@@ -52,7 +53,7 @@ public class UserDto {
         this.oauthType = oauthType;
         this.oauthId = oauthId;
         this.isOAuth = isOAuth;
-        this.lastLoginTime = lastLoginTime;
+        this.passwordModifiedDate = passwordModifiedDate;
     }
 
     public static UserDto toDto(User user) {
@@ -68,8 +69,7 @@ public class UserDto {
                 .nickname(user.getNickname())
                 .oauthType(user.getOauthType())
                 .oauthId(user.getOauthId())
-                .lastLoginTime(user.getLastLoginTime())
+                .passwordModifiedDate(user.getPasswordModifiedDate())
                 .build();
     }
-
 }

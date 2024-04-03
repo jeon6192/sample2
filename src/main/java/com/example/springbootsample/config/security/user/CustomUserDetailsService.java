@@ -1,4 +1,4 @@
-package com.example.springbootsample.service;
+package com.example.springbootsample.config.security.user;
 
 import com.example.springbootsample.model.dto.CustomUserDetails;
 import com.example.springbootsample.model.entity.User;
@@ -21,7 +21,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // AuthenticationProvider 에서 받은 파라미터 (userId) 를 통하여 DB 조회
+        // AuthenticationProvider 에서 받은 파라미터 (username) 를 통하여 DB 조회
         User user = userRepository.findById(username).orElseThrow(()
                 -> new UsernameNotFoundException("USER NOT FOUND"));
 

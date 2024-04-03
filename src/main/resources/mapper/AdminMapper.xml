@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.springbootsample.mapper.AdminMapper">
+
+	<select id="selectAdminByIdx" parameterType="int" resultType="CamelHashMap">
+		SELECT A.idx, A.id, A.name, A.email, A.phone, A.tel, B.name AS dept, D.name AS parentDept, C.name AS role, A.state, A.allowed_ip,
+		       E.file_name AS profileImageName, E.file_path AS profileImagePath, DATE_FORMAT(A.join_date, '%Y-%m-%d'), A.login_failure_cnt,
+			   DATE_FORMAT(A.withdrawal_date, '%Y-%m-%d'), DATE_FORMAT(A.last_login_date, '%Y-%m-%d'), DATE_FORMAT(A.created_at, '%Y-%m-%d'),
+			   A.created_by, DATE_FORMAT(A.updated_at, '%Y-%m-%d'), A.updated_by
+		FROM admin A
+		JOIN dept B ON A.dept_idx = B.idx
+		JOIN role C ON A.role_idx = C.idx
+		LEFT JOIN dept D ON D.idx = B.parent_idx
+		LEFT JOIN attachment E ON E.idx = A.profile_image_idx
+		WHERE A.idx = #{adminIdx}
+	</select>
+
+	<select id="selectChannelListByAdminIdx" parameterType="int" resultType="CamelHashMap">
+		SELECT B.idx, B.name
+		FROM admin_channel A
+		JOIN channel B ON B.idx = A.channel_idx
+		WHERE A.admin_idx = #{adminIdx}
+	</select>
+</mapper>

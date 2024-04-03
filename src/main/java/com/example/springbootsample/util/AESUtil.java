@@ -18,7 +18,11 @@ public class AESUtil {
     @Value("${aes.secret-key}")
     private static String aesSecretKey;
 
-    private static final String ALGORITHM = "AES";
+    private static final String ALGORITHM = "AES/GCM/NoPadding";
+
+    private AESUtil() {
+        throw new IllegalStateException("Utility class");
+    }
 
     public static String encrypt(String input) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
         SecretKeySpec secretKey = new SecretKeySpec(aesSecretKey.getBytes(), ALGORITHM);
