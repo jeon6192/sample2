@@ -53,6 +53,8 @@ public class AuthService extends DefaultOAuth2UserService {
         User user = optionalUser.get();
 
         CustomUserDetails customUserDetails = CustomUserDetails.builder()
+                .type("USER")
+                .idx(user.getIdx())
                 .id(user.getId())
                 .name(user.getName())
                 .withdrawalDate(user.getWithdrawalDate())

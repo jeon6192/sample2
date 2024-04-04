@@ -36,6 +36,8 @@ public class CustomAdminUserDetailsService implements UserDetailsService {
 
         // UserDetails 를 상속하여 만든 CustomUserDetails 를 user 객체의 정보를 추가하여 생성 후 리턴
         return CustomUserDetails.builder()
+                .type("ADMIN")
+                .idx(admin.getIdx())
                 .id(admin.getId())
                 .password(admin.getPassword())
                 .withdrawalDate(admin.getWithdrawalDate())

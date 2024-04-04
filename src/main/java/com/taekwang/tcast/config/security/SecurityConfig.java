@@ -79,7 +79,6 @@ public class SecurityConfig {
 							.loginProcessingUrl("/admin/login")
 							.successHandler(securityConfig.adminAuthenticationSuccessHandler())
 							.failureHandler(securityConfig.adminAuthenticationFailureHandler())
-							.defaultSuccessUrl("/admin/home")
 							.and().authenticationManager(new ProviderManager(securityConfig.adminAuthenticationProvider())))
 					.logout(httpSecurityLogoutConfigurer -> httpSecurityLogoutConfigurer
 							.logoutUrl("/admin/logout")
@@ -116,15 +115,13 @@ public class SecurityConfig {
 							.passwordParameter("password")
 							.loginProcessingUrl("/login")
 							.successHandler(securityConfig.userAuthenticationSuccessHandler())
-							.failureHandler(securityConfig.userAuthenticationFailureHandler())
-							.defaultSuccessUrl("/login"))
+							.failureHandler(securityConfig.userAuthenticationFailureHandler()))
 					.oauth2Login(httpSecurityOAuth2LoginConfigurer -> httpSecurityOAuth2LoginConfigurer
 							.loginPage("/login")
 							.userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig
 									.userService(securityConfig.authService))
 							.successHandler(securityConfig.authSuccessHandler())
-							.failureHandler(securityConfig.authFailureHandler())
-							.defaultSuccessUrl("/login"))
+							.failureHandler(securityConfig.authFailureHandler()))
 					.logout(httpSecurityLogoutConfigurer -> httpSecurityLogoutConfigurer
 							.logoutUrl("/logout")
 							.logoutSuccessUrl("/login")

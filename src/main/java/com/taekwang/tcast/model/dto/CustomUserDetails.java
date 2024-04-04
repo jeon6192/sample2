@@ -14,6 +14,10 @@ import java.util.Map;
 @Getter
 public class CustomUserDetails implements UserDetails, OAuth2User {
     // common
+    private String type;
+
+    private Integer idx;
+
     private String id;
 
     private String password;
@@ -83,9 +87,11 @@ public class CustomUserDetails implements UserDetails, OAuth2User {
     }
 
     @Builder
-    public CustomUserDetails(String id, String password, String name, LocalDateTime withdrawalDate,
+    public CustomUserDetails(String type, Integer idx, String id, String password, String name, LocalDateTime withdrawalDate,
                              Map<String, Object> attributes, String role, String allowedIp, String oauthType,
                              String oauthId, Integer loginFailureCnt) {
+        this.type = type;
+        this.idx = idx;
         this.id = id;
         this.password = password;
         this.name = name;

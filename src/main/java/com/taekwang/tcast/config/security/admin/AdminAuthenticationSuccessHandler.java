@@ -36,6 +36,8 @@ public class AdminAuthenticationSuccessHandler extends SimpleUrlAuthenticationSu
 
         adminService.saveAdmin(admin);
 
+        super.setDefaultTargetUrl("/admin/home");
+
         super.onAuthenticationSuccess(request, response, authentication);
     }
 }

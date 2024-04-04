@@ -76,6 +76,11 @@ public class AdminDto {
         this.updatedBy = updatedBy;
     }
 
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+        this.updatedBy = createdBy;
+    }
+
     public static AdminDto toDto(Admin admin) {
         return AdminDto.builder()
                 .idx(admin.getIdx())
