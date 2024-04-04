@@ -3,7 +3,7 @@ logging:
     org.hibernate.SQL: TRACE
     org.hibernate.type: TRACE
     org.hibernate.type.BasicTypeRegistry: ERROR
-    com.example.springbootsample.mapper: DEBUG
+    com.taekwang.tcast.mapper: DEBUG
 
 spring:
   main:
@@ -30,7 +30,8 @@ mybatis:
     - classpath:/mapper/**/*.xml
   configuration:
     map-underscore-to-camel-case: true
-  type-aliases-package: com.example.springbootsample.util
+    call-setters-on-nulls: true
+  type-aliases-package: com.taekwang.tcast.util
 
 aes.secret-key: "YourSecretKey"
 
