@@ -1,49 +1,71 @@
 package com.taekwang.tcast.config.security.admin;
 
-import com.taekwang.tcast.model.dto.ErrorResponse;
 import com.taekwang.tcast.model.entity.Admin;
 import com.taekwang.tcast.model.enums.UserError;
 import com.taekwang.tcast.service.AdminService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.http.HttpStatus;
-import org.springframework.lang.NonNull;
+import com.taekwang.tcast.service.MailService;
+import com.taekwang.tcast.util.CommonUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 
+@Slf4j
 public class AdminAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
-
-    private final ObjectMapper objectMapper;
 
     private final AdminService adminService;
 
-    public AdminAuthenticationFailureHandler(AdminService adminService) {
+    private final MailService mailService;
+
+    public AdminAuthenticationFailureHandler(AdminService adminService, MailService mailService) {
         this.adminService = adminService;
-        this.objectMapper = new ObjectMapper();
+        this.mailService = mailService;
     }
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                                         AuthenticationException exception) throws IOException {
 
+        String id = request.getParameter("username");
+
         // 비밀번호 오입력 시 로그인 실패횟수 카운트 업데이트
         if (exception instanceof BadCredentialsException) {
-            String id = request.getParameter("username");
             Admin admin = adminService.findByAdminId(id).orElseThrow(() -> new UsernameNotFoundException("USER NOT FOUND"));
 
             admin.setLoginFailureCnt(admin.getLoginFailureCnt() + 1);
+            log.debug("Admin {} Login Failure Count :: {}", admin.getName(), admin.getLoginFailureCnt());
 
             adminService.saveAdmin(admin);
         } else if (exception instanceof LockedException) {
-            // TODO: 비밀번호 초기화 후 이메일 발송
+            // 비밀번호 초기화 후 이메일 발송
+            Admin admin = adminService.findByAdminId(id).orElseThrow(() -> new UsernameNotFoundException("USER NOT FOUND"));
+            String email = admin.getEmail();
+            if (!StringUtils.hasLength(email)) {
+                throw new UsernameNotFoundException("EMAIL INFO NOT FOUND");
+            }
 
+            String newPassword = CommonUtil.generatePassword();
+            log.debug("newPassword : {}", newPassword);
+            String subject = "New Password";
+            String text = "New Password : " + newPassword + "\n변경된 비밀번호로 로그인 해주세요";
+
+            mailService.sendMail(email, subject, text);
+            log.debug("Send Mail");
+            log.debug("Send Mail To : {} / Subject : {} / Text : {}", email, subject, text);
+
+            String encodedPassword = adminService.encodePassword(newPassword);
+            log.debug("encodedPassword : {}", encodedPassword);
+
+            admin.setPassword(encodedPassword);
+
+            adminService.saveAdmin(admin);
         }
 
         /*
@@ -58,26 +80,6 @@ public class AdminAuthenticationFailureHandler extends SimpleUrlAuthenticationFa
         */
         UserError userError = UserError.getErrorByAuthenticationEx(exception);
 
-        printErrorMessage(response, userError);
-    }
-
-    private void printErrorMessage(HttpServletResponse response, @NonNull UserError userError) throws IOException {
-        int statusCode;
-
-        if (userError.getHttpStatus() != null) {
-            statusCode = userError.getHttpStatus().value();
-        } else {
-            statusCode = HttpStatus.UNAUTHORIZED.value();
-        }
-
-        response.setStatus(statusCode);
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-
-        ErrorResponse errorResponse = ErrorResponse.of(userError);
-
-        String errorJson = objectMapper.writeValueAsString(errorResponse);
-        PrintWriter writer = response.getWriter();
-        writer.println(errorJson);
+        CommonUtil.printErrorMessage(response, userError);
     }
 }

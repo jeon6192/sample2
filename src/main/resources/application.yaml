@@ -3,7 +3,8 @@ logging:
     org.hibernate.SQL: TRACE
     org.hibernate.type: TRACE
     org.hibernate.type.BasicTypeRegistry: ERROR
-    com.taekwang.tcast.mapper: DEBUG
+    com.taekwang.tcast.mapper: DEBUG # Mybatis
+    nl.basjes.parse.useragent: WARN # yauaa
 
 spring:
   main:
@@ -43,6 +44,13 @@ jasypt:
     provider-name: SunJCE
     string-output-type: base64
 
+nl:
+  basjes:
+    parse:
+      useragent:
+        utils:
+
+
 ---
 
 spring:
@@ -55,6 +63,18 @@ spring:
     username: user
     password: 3091
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: jsw6192
+    password: wiup hdzk ywbh cpjg
+    properties:
+      mail:
+        smtp:
+          auth: true
+          timout: 10000
+          starttls.enable: true
 
 server:
   port: 8090

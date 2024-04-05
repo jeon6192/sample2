@@ -29,7 +29,8 @@ public class UserAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuc
         User user = userService.findByUserId(id).orElseThrow(()
                 -> new UsernameNotFoundException("USER NOT FOUND"));
 
-        // TODO: 로그인 이력 테이블에 insert
+        // 유저 접속 로그 저장
+        userService.saveUserAccessHistory(request, user);
 
         super.onAuthenticationSuccess(request, response, authentication);
     }

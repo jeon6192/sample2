@@ -21,6 +21,7 @@ public class Admin extends BaseTimeEntity {
 
     private String id;
 
+    @Setter
     private String password;
 
     private String name;

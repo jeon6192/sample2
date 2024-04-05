@@ -1,5 +1,6 @@
 package com.taekwang.tcast.model.entity;
 
+import com.taekwang.tcast.model.dto.CommonCodeDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -39,5 +40,14 @@ public class CommonCode extends BaseTimeEntity {
         this.isActive = isActive;
         this.createdBy = createdBy;
         this.updatedBy = updatedBy;
+    }
+
+    public static CommonCode toEntity(CommonCodeDto dto) {
+        return CommonCode.builder()
+                .idx(dto.getIdx())
+                .category(dto.getCategory())
+                .code(dto.getCode())
+                .isActive(dto.getIsActive())
+                .build();
     }
 }

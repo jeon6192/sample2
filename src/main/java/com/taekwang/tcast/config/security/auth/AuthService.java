@@ -36,14 +36,17 @@ public class AuthService extends DefaultOAuth2UserService {
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
         String nameAttributeKey = userRequest.getClientRegistration().getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName();
 
-        HttpSession session = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest().getSession(true);
         OAuth2Type oAuth2Type = OAuth2Type.findByType(registrationId);
 
         CustomOAuth2User customOAuth2User = CustomOAuth2User.of(oAuth2Type, attributes, nameAttributeKey);
         String oauthId = customOAuth2User.getOAuthId();
 
+        // 소셜 타입 (registrationId) 와 아이디 (oauthId) 로 user 테이블 조회
         Optional<User> optionalUser = userService.findByOauthTypeAndOauthId(registrationId, oauthId);
+        // 회원정보가 없다면 회원가입 페이지로 리다이렉트 시키기 위해 Exception 발생
         if (optionalUser.isEmpty()) {
+            // FailureHandler 에 데이터 전달을 위해 session 사용
+            HttpSession session = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest().getSession(true);
             session.setAttribute("oauthType", oAuth2Type.getOauthType());
             session.setAttribute("customOAuth2User", customOAuth2User);
 

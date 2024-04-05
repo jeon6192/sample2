@@ -1,6 +1,7 @@
 package com.taekwang.tcast.model.dto;
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,6 +13,7 @@ import java.util.Collections;
 import java.util.Map;
 
 @Getter
+@EqualsAndHashCode(of = {"idx"}) // 로그인 최대 허용치 설정을 위해 lombok 을 통해 idx 컬럼으로 equals 와 hashcode 오버라이딩
 public class CustomUserDetails implements UserDetails, OAuth2User {
     // common
     private String type;

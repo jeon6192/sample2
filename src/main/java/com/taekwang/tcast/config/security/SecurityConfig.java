@@ -9,6 +9,7 @@ import com.taekwang.tcast.config.security.auth.AuthService;
 import com.taekwang.tcast.config.security.auth.AuthSuccessHandler;
 import com.taekwang.tcast.config.security.user.*;
 import com.taekwang.tcast.service.AdminService;
+import com.taekwang.tcast.service.MailService;
 import com.taekwang.tcast.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,9 +40,10 @@ public class SecurityConfig {
 	private final CustomAuthenticationEntryPoint authenticationEntryPoint;
 	private final CustomAccessDeniedHandler accessDeniedHandler;
 	private final AuthService authService;
+	private final MailService mailService;
 
 	public SecurityConfig(CustomUserDetailsService customUserDetailsService, UserService userService, CustomAdminUserDetailsService customAdminUserDetailsService,
-						  AdminService adminService, CustomAuthenticationEntryPoint authenticationEntryPoint, CustomAccessDeniedHandler accessDeniedHandler, AuthService authService) {
+                          AdminService adminService, CustomAuthenticationEntryPoint authenticationEntryPoint, CustomAccessDeniedHandler accessDeniedHandler, AuthService authService, MailService mailService) {
 		this.customUserDetailsService = customUserDetailsService;
 		this.userService = userService;
 		this.customAdminUserDetailsService = customAdminUserDetailsService;
@@ -49,7 +51,8 @@ public class SecurityConfig {
 		this.authenticationEntryPoint = authenticationEntryPoint;
 		this.accessDeniedHandler = accessDeniedHandler;
 		this.authService = authService;
-	}
+        this.mailService = mailService;
+    }
 
 	@Configuration
 	@Order(1)
@@ -83,7 +86,11 @@ public class SecurityConfig {
 					.logout(httpSecurityLogoutConfigurer -> httpSecurityLogoutConfigurer
 							.logoutUrl("/admin/logout")
 							.logoutSuccessUrl("/admin/login")
-							.invalidateHttpSession(true));
+							.invalidateHttpSession(true))
+					.sessionManagement()
+							.maximumSessions(1)
+							.maxSessionsPreventsLogin(false)
+			;
 
 			return http.build();
 		}
@@ -126,6 +133,9 @@ public class SecurityConfig {
 							.logoutUrl("/logout")
 							.logoutSuccessUrl("/login")
 							.invalidateHttpSession(true))
+					.sessionManagement()
+							.maximumSessions(1)
+							.maxSessionsPreventsLogin(false)
 			;
 
 			return http.build();
@@ -198,7 +208,7 @@ public class SecurityConfig {
 	// Admin Failure Handler
 	@Bean
 	public AdminAuthenticationFailureHandler adminAuthenticationFailureHandler() {
-		return new AdminAuthenticationFailureHandler(adminService);
+		return new AdminAuthenticationFailureHandler(adminService, mailService);
 	}
 
 }
